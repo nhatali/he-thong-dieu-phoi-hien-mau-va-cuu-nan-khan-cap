@@ -20,49 +20,46 @@
 </div>
 
 ## 📖 1. Giới thiệu
-Hệ thống điều phối hiến máu và cứu nạn khẩn cấp dựa trên nền tảng dữ liệu và định vị số là một ứng dụng web cho phép:
+Hệ thống điều phối hiến máu và cứu nạn khẩn cấp là một ứng dụng web hoàn chỉnh giúp kết nối nhanh chóng giữa:
+- Người sẵn sàng hiến máu tình nguyện  
+- Người bệnh cần máu khẩn cấp  
+- Quản trị viên hệ thống (Admin)
 
-- Người dùng đăng ký hiến máu, tìm các điểm hiến máu gần vị trí thực của bản thân.  
-- Người nhận cứu nạn khẩn cấp gửi yêu cầu cứu trợ với thông tin chính xác và thời gian thực.  
-- Quản trị hệ thống theo dõi số liệu hiến máu, người đăng ký, lịch hiến và các tình huống khẩn cấp.  
-- Hiển thị bản đồ trực quan các điểm hiến máu, cứu nạn và các chương trình hiến máu đang diễn ra.  
-
-Hệ thống giúp **tối ưu hóa việc điều phối máu và cứu trợ**, giảm thiểu thời gian phản hồi và cải thiện hiệu quả cứu người.
+Ứng dụng sử dụng **định vị GPS thời gian thực** và **bản đồ tương tác** (Leaflet + OpenStreetMap) để:
+- Tự động xác định vị trí người dùng
+- Hiển thị **5 bệnh viện gần nhất** kèm khoảng cách chính xác (km)
+- Đánh dấu vị trí người hiến máu và các yêu cầu cứu nạn đang chờ xử lý
+- Rút ngắn tối đa thời gian điều phối máu trong tình huống cấp cứu
 
 ---
 
 ## 🔧 2. Ngôn ngữ lập trình sử dụng
 
-- HTML, CSS, JavaScript:  
-  - Thiết kế giao diện web trực quan, responsive.  
-  - Quản lý dữ liệu tạm thời bằng LocalStorage.  
-  - Thêm các chức năng tương tác như bản đồ, thông báo, bảng thống kê.  
+| Công nghệ                  | Mục đích sử dụng                                                                 |
+|----------------------------|-----------------------------------------------------------------------------------|
+| HTML5 + CSS3 + JavaScript  | Xây dựng giao diện responsive, hiện đại, hoạt động mượt trên mọi thiết bị       |
+| **Leaflet.js + OpenStreetMap** | Bản đồ tương tác, định vị GPS, tính khoảng cách, hiển thị marker động          |
+| **LocalStorage**           | Lưu trữ toàn bộ dữ liệu người dùng, lịch hiến máu, yêu cầu cứu nạn (không cần server) |
+| **Font Awesome 6**         | Hệ thống icon đẹp, nhất quán                                                      |
+| **Glassmorphism + Gradient** | Giao diện Admin và trang người dùng cực kỳ hiện đại, chuyên nghiệp             |
 
-- Có thể mở rộng sử dụng **API định vị (Google Maps / Leaflet)** để xác định vị trí người dùng và điểm hiến máu gần nhất.
+→ Dễ dàng mở rộng lên backend (Node.js + MongoDB/Firebase) khi triển khai thực tế.
 
 ---
 
 ## 🚀 3. Các chức năng chính
 
-- **Đăng ký và đăng nhập người hiến máu**  
-  - Lưu thông tin cá nhân, nhóm máu và lịch hiến.  
-
-- **Đăng ký cứu nạn khẩn cấp**  
-  - Gửi yêu cầu cứu trợ với thông tin chi tiết, được lưu trong hệ thống.  
-
-- **Bản đồ địa điểm hiến máu và cứu nạn**  
-  - Hiển thị các điểm hiến máu gần vị trí thực của người dùng.  
-  - Cho phép click vào marker để xem thông tin chi tiết.  
-
-- **Tin tức chương trình hiến máu**  
-  - Hiển thị danh sách các chiến dịch hiến máu đang diễn ra.  
-
-- **Thống kê dữ liệu**  
-  - Tổng số người hiến theo nhóm máu O, A, B, AB.  
-  - Số yêu cầu cứu nạn và lịch hiến đã đăng ký.  
-
-- **Quản lý thông tin người dùng**  
-  - Chỉnh sửa thông tin cá nhân, đổi mật khẩu, đăng xuất.  
+| Chức năng                                | Mô tả chi tiết                                                                                 |
+|------------------------------------------|-------------------------------------------------------------------------------------------------|
+| Đăng ký / Đăng nhập người dùng           | Dùng số điện thoại + mật khẩu, lưu nhóm máu, địa chỉ                                           |
+| Đăng ký hiến máu                         | Chọn ngày, địa điểm → tự động hiển thị trên bản đồ                                             |
+| Gửi yêu cầu cứu nạn khẩn cấp             | Nhập thông tin bệnh nhân, nhóm máu cần → hiện ngay marker nhấp nháy trên bản đồ                |
+| **Bản đồ tương tác + Định vị GPS**       | Nhấn nút “Vị trí” → định vị tức thì → hiển thị 5 bệnh viện gần nhất + khoảng cách + vòng 5km   |
+| Tìm người hiến máu                       | Xem danh sách + vị trí trên bản đồ theo nhóm máu                                               |
+| Trang quản trị Admin                     | Dashboard thống kê realtime, quản lý người dùng, yêu cầu cứu nạn, lịch hiến máu                 |
+| Thống kê trực quan                       | Tổng người hiến, yêu cầu đang chờ, mạng sống được cứu                                          |
+| Thông báo Toast đẹp                      | Hiển thị thành công/lỗi kiểu hiện đại                                                          |
+| Responsive 100%                          | Hoạt động hoàn hảo trên điện thoại, máy tính bảng, PC                                          |
 
 ---
 
@@ -70,53 +67,77 @@ Hệ thống giúp **tối ưu hóa việc điều phối máu và cứu trợ**
 
 - **Trang chủ / Dashboard**  
 
-
+![alt text](image.png)
 
 - **Đăng ký hiến máu / Lịch hiến**  
 
+![alt text](image-1.png)
 
 
-- **Bản đồ điểm hiến máu gần bạn**  
+- **Yêu cầu cứu nạn khẩn cấp**  
 
+![alt text](image-2.png)
 
+- **Danh sách người sẵn sàng hiến máu**
 
-- **Tin tức hiến máu**  
+![alt text](image-3.png)
 
+- **Đăng ký tài khoản**
 
+![alt text](image-4.png)
 
-- **Thông tin cứu nạn khẩn cấp**  
+- **Đăng nhập tài khoản**
 
+![alt text](image-5.png)
+
+- **Trang chủ Admin**
+
+![alt text](image-6.png)
+
+- **Quản lý người hiến máu**
+
+![alt text](image-8.png)
+
+- **Danh sách người dùng**
+
+![alt text](image-9.png)
+
+- **Danh sách yêu cầu cứu nạn**
+
+![alt text](image-10.png)
 
 ---
 
 ## 🚀 5. Các bước cài đặt và sử dụng
 
 ### 5.1 Yêu cầu
-- Trình duyệt web hiện đại (Chrome, Firefox, Edge).  
-- Không yêu cầu server phức tạp (dùng LocalStorage lưu dữ liệu).  
-- Nếu muốn mở rộng: cài đặt web server (Apache, Node.js) để lưu dữ liệu thật.  
+- Chỉ cần trình duyệt web hiện đại (Chrome, Edge, Firefox)
+- Không cần cài đặt server, phần mềm nào
 
 ### 5.2 Cấu trúc dự án
 
 ![alt text](image-7.png)
 
-### 5.3 Chạy hệ thống
-1. Mở **index.html** trên trình duyệt.  
-2. Người dùng mới đăng ký qua **register.html**.  
-3. Đăng nhập bằng email và mật khẩu.  
-4. Truy cập các tính năng:  
-   - `Lịch hiến` → đăng ký lịch hiến máu.  
-   - `Bản đồ` → xem điểm hiến máu gần bạn.  
-   - `Tin tức` → xem chiến dịch hiến máu.  
-   - `Cứu nạn` → gửi yêu cầu cứu nạn khẩn cấp.  
+### 5.3 Các bước chạy dự án
+1. Giải nén toàn bộ thư mục dự án  
+2. Mở file `index.html` bằng trình duyệt (khuyên dùng **Live Server** trong VS Code để bản đồ chạy mượt nhất)  
+3. Đăng ký tài khoản mới → Đăng nhập  
+4. Trải nghiệm các chức năng:
+   - `Hiến máu ngay` → đăng ký hiến máu
+   - `Cần máu gấp!` → gửi yêu cầu cứu nạn
+   - `Bản đồ` → nhấn nút "Vị trí" để xem bệnh viện gần bạn nhất
+   - Chatbot góc dưới → hỏi gì cũng trả lời!
+   - Admin: dùng SĐT `0123456789` + mật khẩu `admin123` → vào `admin/login.html`
 
 ---
 
 ## 📝 License
 
-Họ tên: Nguyễn Chí Nhật
+Họ tên: Nguyễn Chí Nhật & Cao Văn Huy & Đào Đức Mạnh
 
-MSV: 1671020231
+MSV: 1671020231 & 1671020135 & 1671020198
+
+Email: chinhatff@gmail.com
 
 Lớp: CNTT 16-03
 
