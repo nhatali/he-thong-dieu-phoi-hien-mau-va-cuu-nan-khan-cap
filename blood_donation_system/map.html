@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bản đồ cấp cứu & định vị</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-sA+Zcx8J1tY/vT1i7b5x8u0u8zNqW5O7eJ0K3+Jfp4M=" crossorigin=""/>
+
+  <style>
+    body, html { margin:0; padding:0; height:100%; font-family:Arial,sans-serif; background:#f0f2f5; }
+    #map { width:100%; height:100vh; }
+    header { position:fixed; top:0; width:100%; background:#d32f2f; color:white; text-align:center; padding:15px; z-index:999; box-shadow:0 4px 10px rgba(0,0,0,0.3); }
+    header h2 { margin:0; font-size:1.8rem; }
+
+    .locate-btn {
+      position:fixed; bottom:25px; right:25px; z-index:1000;
+      width:60px; height:60px; background:#1b5e20; color:white;
+      border:none; border-radius:50%; font-size:28px; cursor:pointer;
+      box-shadow:0 10px 30px rgba(0,0,0,0.4);
+    }
+    .locate-btn:hover { background:#2e7d32; transform:scale(1.1); }
+    .locate-btn:disabled { background:#999; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h2>BloodLink – Bản đồ cấp cứu & định vị</h2>
+  </header>
+
+  <div id="map"></div>
+  <button class="locate-btn" id="locateBtn" title="Định vị vị trí của bạn">Vị trí</button>
+
+  <!-- Leaflet JS – BẮT BUỘC DÙNG defer hoặc onload -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-o9N1j6B2kZ7vW3g7gf6v1H4N2V3i6g+jg9w0F3e7vWY=" crossorigin=""></script>
+
+  <!-- utils.js của bạn -->
+  <script src="js/utils.js"></script>
+
+  <!-- TOÀN BỘ CODE BẢN ĐỒ – CHỈ CHẠY SAU KHI Leaflet ĐÃ LOAD XONG -->
+  <script>
+    // Đảm bảo Leaflet đã load xong mới chạy
+    function initMap() {
+      if (typeof L === 'undefined') {
+        console.error("Leaflet chưa load!");
+        return;
+      }
+
+      const map = L.map('map').setView([10.7769, 106.7009], 12);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; BloodLink Việt Nam',
+        maxZoom: 19
+      }).addTo(map);
+
+      // Icon người dùng
+      const userIcon = L.divIcon({
+        html: '<div style="background:#1b5e20;color:white;width:40px;height:40px;border-radius:50%;border:4px solid white;display:flex;align-items:center;justify-content:center;font-weight:bold;box-shadow:0 0 20px #1b5e20;">Bạn</div>',
+        iconSize: [40,40],
+        iconAnchor: [20,20]
+      });
+
+      // Danh sách bệnh viện
+      const hospitals = [
+        {name:"Bệnh viện Chợ Rẫy", lat:10.7583, lng:106.6625, phone:"028 3855 4137"},
+        {name:"Bệnh viện 115", lat:10.7725, lng:106.6985, phone:"028 3865 2425"},
+        {name:"Bệnh viện Từ Dũ", lat:10.7589, lng:106.6921, phone:"028 3839 4511"},
+        {name:"Trung tâm Hiến máu Nhân đạo", lat:10.7769, lng:106.7009, phone:"028 3820 4567"}
+      ];
+
+      let userMarker, userCircle;
+
+      document.getElementById('locateBtn').onclick = function() {
+        this.disabled = true;
+        this.innerHTML = 'Đang tìm...';
+
+        map.locate({setView: true, maxZoom: 16});
+
+        map.on('locationfound', function(e) {
+          if (userMarker) map.removeLayer(userMarker);
+          if (userCircle) map.removeLayer(userCircle);
+
+          userMarker = L.marker(e.latlng, {icon: userIcon}).addTo(map)
+            .bindPopup("<strong>Bạn đang ở đây!</strong>").openPopup();
+
+          userCircle = L.circle(e.latlng, {radius: 5000, color: '#1b5e20', fillOpacity: 0.1}).addTo(map);
+
+          // Hiển thị bệnh viện gần
+          hospitals.forEach(h => {
+            const dist = map.distance(e.latlng, [h.lat, h.lng]) / 1000;
+            L.marker([h.lat, h.lng])
+              .addTo(map)
+              .bindPopup(`<strong>${h.name}</strong><br>Khoảng cách: <b>${dist.toFixed(1)} km</b><br>SĐT: ${h.phone}`);
+          });
+
+          alert("Đã định vị thành công! Hiển thị bệnh viện gần bạn.");
+          document.getElementById('locateBtn').innerHTML = 'Vị trí';
+          document.getElementById('locateBtn').disabled = false;
+        });
+
+        map.on('locationerror', function() {
+          alert("Không thể lấy vị trí. Vui lòng bật GPS và cho phép truy cập vị trí!");
+          document.getElementById('locateBtn').innerHTML = 'Vị trí';
+          document.getElementById('locateBtn').disabled = false;
+        });
+      };
+
+      // Tải dữ liệu người hiến máu nếu có
+      if (typeof getDonors === 'function' && typeof getUsers === 'function') {
+        const donors = getDonors();
+        const users = getUsers();
+        donors.forEach(d => {
+          const user = users.find(u => u.id === d.userId);
+          if (user) {
+            const h = hospitals.find(h => d.location && d.location.includes(h.name));
+            if (h) {
+              L.circleMarker([h.lat, h.lng], {radius: 8, color: '#d32f2f', fillOpacity: 0.8})
+                .addTo(map)
+                .bindPopup(`<strong>${user.name}</strong><br>${user.bloodType}<br>${d.date}`);
+            }
+          }
+        });
+      }
+
+      alert("Bản đồ đã sẵn sàng!\nNhấn nút 'Vị trí' để xem bệnh viện gần bạn.");
+    }
+
+    // CHẠY initMap SAU KHI Leaflet ĐÃ LOAD HOÀN TOÀN
+    if (typeof L !== 'undefined') {
+      initMap();
+    } else {
+      document.querySelector('script[src*="leaflet.js"]').onload = initMap;
+    }
+  </script>
+</body>
+</html>
