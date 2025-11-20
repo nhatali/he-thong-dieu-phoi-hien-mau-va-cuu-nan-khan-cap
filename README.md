@@ -70,30 +70,21 @@ Hệ thống giúp **tối ưu hóa việc điều phối máu và cứu trợ**
 
 - **Trang chủ / Dashboard**  
 
-![alt text](image.png)
+
 
 - **Đăng ký hiến máu / Lịch hiến**  
 
-![alt text](image-1.png)
+
 
 - **Bản đồ điểm hiến máu gần bạn**  
 
-![alt text](image-2.png)
+
 
 - **Tin tức hiến máu**  
 
-![alt text](image-3.png)
+
 
 - **Thông tin cứu nạn khẩn cấp**  
-
-![alt text](image-4.png)
-
-- **Chatbot**
-
-![alt text](image-6.png)
-
-- **Dự đoán khả năng hiến máu**
-
 
 
 ---
@@ -107,7 +98,7 @@ Hệ thống giúp **tối ưu hóa việc điều phối máu và cứu trợ**
 
 ### 5.2 Cấu trúc dự án
 
-![alt text](image-5.png)
+![alt text](image-7.png)
 
 ### 5.3 Chạy hệ thống
 1. Mở **index.html** trên trình duyệt.  
