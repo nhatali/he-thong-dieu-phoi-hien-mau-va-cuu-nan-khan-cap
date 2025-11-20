@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Đăng ký</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body class="auth-page">
+  <div class="auth-container">
+    <h2>Đăng Ký Tài Khoản</h2>
+    <form id="registerForm">
+      <input type="text" placeholder="Họ tên" id="name" required />
+      <input type="text" placeholder="Số điện thoại" id="phone" required />
+      <input type="text" placeholder="Nhóm máu (VD: O+)" id="bloodType" required />
+      <input type="text" placeholder="Địa chỉ" id="address" required />
+      <input type="password" placeholder="Mật khẩu" id="password" required />
+      <button type="submit" class="btn primary">Đăng ký</button>
+    </form>
+    <p id="regMsg" class="msg"></p>
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script>
+    document.getElementById("registerForm").onsubmit = function(e) {
+      e.preventDefault();
+      const users = getUsers();
+      const phone = document.getElementById("phone").value;
+
+      if (users.some(u => u.phone === phone)) {
+        document.getElementById("regMsg").textContent = "Số điện thoại đã tồn tại!";
+        return;
+      }
+
+      const newUser = {
+        id: Date.now().toString(),
+        name: document.getElementById("name").value,
+        phone,
+        bloodType: document.getElementById("bloodType").value,
+        address: document.getElementById("address").value,
+        password: document.getElementById("password").value,
+        role: "user",
+        lastDonation: null
+      };
+
+      users.push(newUser);
+      localStorage.setItem("users", JSON.stringify(users));
+      alert("Đăng ký thành công! Vui lòng đăng nhập.");
+      window.location.href = "login.html";
+    };
+  </script>
+</body>
+</html>

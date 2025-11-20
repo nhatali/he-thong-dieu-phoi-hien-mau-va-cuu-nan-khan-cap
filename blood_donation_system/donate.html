@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Đăng ký hiến máu</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <header><!-- Giống index.html --></header>
+
+  <div class="container">
+    <h2>Đăng Ký Hiến Máu</h2>
+    <div class="form-card">
+      <form id="donateForm">
+        <p><strong>Người dùng:</strong> <span id="currentUserName"></span></p>
+        <label>Ngày dự kiến hiến máu:</label>
+        <input type="date" id="donateDate" required />
+        <label>Địa điểm hiến máu:</label>
+        <input type="text" id="location" placeholder="VD: BV Chợ Rẫy, TP.HCM" required />
+        <button type="submit" class="btn primary">Gửi đăng ký</button>
+      </form>
+      <p id="donateMsg" class="msg"></p>
+    </div>
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script>
+    if (!isLoggedIn()) window.location.href = "login.html";
+    document.getElementById("currentUserName").textContent = getCurrentUser().name;
+
+    document.getElementById("donateForm").onsubmit = function(e) {
+      e.preventDefault();
+      const donors = getDonors();
+      const user = getCurrentUser();
+
+      const donation = {
+        id: Date.now().toString(),
+        userId: user.id,
+        name: user.name,
+        phone: user.phone,
+        bloodType: user.bloodType,
+        date: document.getElementById("donateDate").value,
+        location: document.getElementById("location").value,
+        status: "Đã đăng ký"
+      };
+
+      donors.push(donation);
+      localStorage.setItem("donors", JSON.stringify(donors));
+      document.getElementById("donateMsg").textContent = "Đăng ký hiến máu thành công!";
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Yêu cầu máu khẩn cấp</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>BloodLink Việt Nam</h1>
+      <nav>
+        <a href="index.html">Trang chủ</a>
+        <a href="rescue.html">Gửi yêu cầu</a>
+        <a href="donors-info.html">Tìm người hiến</a>
+        <a href="map.html">Bản đồ</a>
+        <span id="user-menu"></span>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <h2>Yêu cầu máu khẩn cấp (công khai)</h2>
+    <div id="requestsList"></div>
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script>
+    function loadRequests() {
+      const requests = getRescueRequests();
+      const list = document.getElementById("requestsList");
+      list.innerHTML = "";
+
+      if (requests.length === 0) {
+        list.innerHTML = "<p>Hiện không có yêu cầu nào.</p>";
+        return;
+      }
+
+      requests.forEach(r => {
+        const div = document.createElement("div");
+        div.className = "request-card " + (r.status === "Đang chờ" ? "urgent" : "");
+        div.innerHTML = `
+          <h3>${r.bloodNeeded} • ${r.bags} túi máu • ${r.hospital}</h3>
+          <p><strong>Bệnh nhân:</strong> ${r.patientName}</p>
+          <p><strong>Liên hệ:</strong> ${r.contactPhone}</p>
+          <p><strong>Thời gian:</strong> ${r.timestamp}</p>
+          ${r.note ? `<p><em>${r.note}</em></p>` : ""}
+          <span class="status">${r.status}</span>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      updateUserMenu();
+      loadRequests();
+    });
+  </script>
+</body>
+</html>

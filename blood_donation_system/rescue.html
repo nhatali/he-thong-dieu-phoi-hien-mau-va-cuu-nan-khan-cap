@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Yêu cầu cứu nạn khẩn cấp</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <div class="container">
+    <h2 class="danger">🚨 YÊU CẦU MÁU KHẨN CẤP</h2>
+    <form id="rescueForm" class="form-card">
+      <input type="text" placeholder="Họ tên bệnh nhân" id="patientName" required />
+      <input type="text" placeholder="Nhóm máu cần" id="bloodNeeded" required />
+      <input type="text" placeholder="Số lượng túi máu" id="bags" value="1" />
+      <input type="text" placeholder="Bệnh viện" id="hospital" required />
+      <textarea placeholder="Mô tả tình trạng (tùy chọn)" id="note"></textarea>
+      <input type="text" placeholder="Số ĐT người nhà" id="contactPhone" required />
+      <button type="submit" class="btn danger">GỬI YÊU CẦU NGAY</button>
+    </form>
+    <p id="rescueMsg" class="msg"></p>
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script>
+    document.getElementById("rescueForm").onsubmit = function(e) {
+      e.preventDefault();
+      const requests = getRescueRequests();
+
+      const req = {
+        id: Date.now().toString(),
+        patientName: document.getElementById("patientName").value,
+        bloodNeeded: document.getElementById("bloodNeeded").value,
+        bags: document.getElementById("bags").value,
+        hospital: document.getElementById("hospital").value,
+        note: document.getElementById("note").value,
+        contactPhone: document.getElementById("contactPhone").value,
+        timestamp: new Date().toLocaleString("vi-VN"),
+        status: "Đang chờ"
+      };
+
+      requests.unshift(req);
+      localStorage.setItem("rescueRequests", JSON.stringify(requests));
+      document.getElementById("rescueMsg").innerHTML = "Đã gửi yêu cầu thành công! Chúng tôi sẽ liên hệ sớm nhất.";
+    };
+  </script>
+</body>
+</html>

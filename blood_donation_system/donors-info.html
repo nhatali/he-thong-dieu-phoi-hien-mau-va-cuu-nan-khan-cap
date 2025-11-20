@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Danh sách người hiến máu</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>BloodLink Việt Nam</h1>
+      <nav>
+        <a href="index.html">Trang chủ</a>
+        <a href="donate.html">Hiến máu</a>
+        <a href="rescue.html">Cần máu gấp</a>
+        <a href="donors-info.html">Tìm người hiến</a>
+        <a href="map.html">Bản đồ</a>
+        <span id="user-menu"></span>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container">
+    <h2>Danh sách người sẵn sàng hiến máu</h2>
+    <div class="filter">
+      <input type="text" id="searchBlood" placeholder="Tìm nhóm máu (VD: O+, AB-)" />
+      <button onclick="filterDonors()" class="btn primary">Tìm</button>
+    </div>
+
+    <table id="donorsTable">
+      <thead>
+        <tr>
+          <th>Họ tên</th>
+          <th>Nhóm máu</th>
+          <th>Số điện thoại</th>
+          <th>Địa chỉ</th>
+          <th>Hiến lần cuối</th>
+        </tr>
+      </thead>
+      <tbody id="donorsBody"></tbody>
+    </table>
+  </div>
+
+  <script src="js/utils.js"></script>
+  <script>
+    function loadDonors() {
+      const donors = getDonors();
+      const users = getUsers();
+      const tbody = document.getElementById("donorsBody");
+
+      tbody.innerHTML = "";
+      donors.forEach(d => {
+        const user = users.find(u => u.id === d.userId);
+        if (!user) return;
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${user.name}</td>
+          <td><strong class="blood-${user.bloodType.replace('+','p')}">${user.bloodType}</strong></td>
+          <td>${user.phone}</td>
+          <td>${user.address}</td>
+          <td>${d.date || "Chưa hiến"}</td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
+    function filterDonors() {
+      const keyword = document.getElementById("searchBlood").value.trim().toUpperCase();
+      const rows = document.querySelectorAll("#donorsBody tr");
+      rows.forEach(row => {
+        const blood = row.cells[1].textContent.toUpperCase();
+        row.style.display = keyword === "" || blood.includes(keyword) ? "" : "none";
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      updateUserMenu();
+      loadDonors();
+    });
+  </script>
+</body>
+</html>

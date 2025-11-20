@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Hệ Thống Hiến Máu & Cấp Cứu Khẩn Cấp</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>🩸 Hệ thống hiến máu và cứu nạn</h1>
+      <nav>
+        <a href="index.html">Trang chủ</a>
+        <a href="donate.html">Đăng ký hiến máu</a>
+        <a href="rescue.html">Yêu cầu cứu nạn</a>
+        <a href="donors-info.html">Tìm người hiến</a>
+        <a href="map.html">Bản đồ cấp cứu</a>
+        <span id="user-menu"></span>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <h2>Mỗi giọt máu – Một mạng sống</h2>
+      <p>Hệ thống kết nối người hiến máu và người cần máu khẩn cấp</p>
+      <div class="actions">
+        <a href="donate.html" class="btn primary">Hiến máu ngay</a>
+        <a href="rescue.html" class="btn danger">Cần máu gấp!</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats container">
+    <div class="stat">
+      <h3 id="total-donors">0</h3>
+      <p>Người đã hiến</p>
+    </div>
+    <div class="stat">
+      <h3 id="total-requests">0</h3>
+      <p>Yêu cầu đang chờ</p>
+    </div>
+    <div class="stat">
+      <h3 id="saved-lives">0</h3>
+      <p>Mạng sống được cứu</p>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 Hệ thống điều phối hiến máu và cứu nạn</p>
+  </footer>
+
+  <script src="js/utils.js"></script>
+  <script src="js/main.js"></script>
+  <script>
+    // Load thống kê
+    document.addEventListener("DOMContentLoaded", () => {
+      updateStats();
+      updateUserMenu();
+    });
+  </script>
+</body>
+</html>
