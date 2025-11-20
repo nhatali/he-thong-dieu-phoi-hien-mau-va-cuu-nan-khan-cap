@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Dashboard</title>
+  <link rel="stylesheet" href="../css/admin.css" />
+</head>
+<body>
+  <div class="admin-container">
+    <h1>Quản Trị Hệ Thống</h1>
+    <nav>
+      <a href="dashboard.html">Tổng quan</a>
+      <a href="donors.html">Người hiến máu</a>
+      <a href="rescue.html">Yêu cầu cứu nạn</a>
+      <a href="users.html">Người dùng</a>
+      <a href="../login.html" onclick="logout()">Đăng xuất</a>
+    </nav>
+
+    <div class="stats">
+      <div>Tổng người dùng: <strong id="totalUsers">0</strong></div>
+      <div>Tổng đăng ký hiến: <strong id="totalDonations">0</strong></div>
+      <div>Yêu cầu đang chờ: <strong id="pendingRequests">0</strong></div>
+    </div>
+  </div>
+
+  <script src="../js/utils.js"></script>
+  <script>
+    if (!isLoggedIn() || getCurrentUser().role !== "admin") {
+      alert("Truy cập bị từ chối!");
+      window.location.href = "../login.html";
+    }
+
+    document.getElementById("totalUsers").textContent = getUsers().length;
+    document.getElementById("totalDonations").textContent = getDonors().length;
+    document.getElementById("pendingRequests").textContent = getRescueRequests().filter(r => r.status === "Đang chờ").length;
+  </script>
+</body>
+</html>

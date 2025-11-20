@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý yêu cầu cứu nạn</title>
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+  <div class="admin-container">
+    <h1>Yêu cầu cứu nạn</h1>
+    <nav>
+      <a href="dashboard.html">Tổng quan</a>
+      <a href="donors.html">Người hiến</a>
+      <a href="rescue.html">Yêu cầu cứu nạn</a>
+      <a href="users.html">Người dùng</a>
+      <a href="#" onclick="logout()">Đăng xuất</a>
+    </nav>
+
+    <div id="adminRescueList"></div>
+  </div>
+
+  <script src="../js/utils.js"></script>
+  <script>
+    if (!isLoggedIn() || getCurrentUser().role !== "admin") location.href = "../login.html";
+
+    function loadRescue() {
+      const requests = getRescueRequests();
+      const container = document.getElementById("adminRescueList");
+      container.innerHTML = "";
+
+      requests.forEach(r => {
+        const div = document.createElement("div");
+        div.className = "request-card";
+        div.innerHTML = `
+          <h3>${r.bloodNeeded} - ${r.hospital}</h3>
+          <p>Bệnh nhân: ${r.patientName} | SĐT: ${r.contactPhone}</p>
+          <p>Thời gian: ${r.timestamp}</p>
+          <p>Trạng thái: <strong>${r.status}</strong></p>
+          ${r.status === "Đang chờ" ? `
+            <button onclick="markResolved('${r.id}')">Đánh dấu đã xử lý</button>
+          ` : ""}
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function markResolved(id) {
+      let requests = getRescueRequests();
+      requests = requests.map(r => r.id === id ? {...r, status: "Đã xử lý"} : r);
+      localStorage.setItem("rescueRequests", JSON.stringify(requests));
+      loadRescue();
+    }
+
+    loadRescue();
+  </script>
+</body>
+</html>

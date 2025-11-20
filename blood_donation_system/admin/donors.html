@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin - Quản lý người hiến máu</title>
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="stylesheet" href="../css/style.css"> <!-- dùng chung style nếu cần -->
+</head>
+<body>
+  <div class="admin-container">
+    <h1>Quản lý người hiến máu</h1>
+    
+    <nav class="admin-nav">
+      <a href="dashboard.html">Tổng quan</a>
+      <a href="donors.html">Người hiến máu</a>
+      <a href="rescue.html">Yêu cầu cứu nạn</a>
+      <a href="users.html">Người dùng</a>
+      <a href="#" onclick="logout(); return false;">Đăng xuất</a>
+    </nav>
+
+    <div class="table-wrapper">
+      <table id="donorsTable">
+        <thead>
+          <tr>
+            <th>Họ tên</th>
+            <th>Nhóm máu</th>
+            <th>Số điện thoại</th>
+            <th>Ngày dự kiến hiến</th>
+            <th>Địa điểm</th>
+            <th>Trạng thái</th>
+            <th>Hành động</th>
+          </tr>
+        </thead>
+        <tbody id="adminDonorsBody">
+          <!-- Dữ liệu sẽ được JS fill vào đây -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="../js/utils.js"></script>
+  <script>
+    // === KIỂM TRA QUYỀN ADMIN ===
+    if (!isLoggedIn() || getCurrentUser().role !== "admin") {
+      alert("Bạn không có quyền truy cập trang này!");
+      window.location.href = "../login.html";
+    }
+
+    // === HÀM TẢI DANH SÁCH NGƯỜI HIẾN ===
+    function loadAdminDonors() {
+      const donors = getDonors();        // từ localStorage
+      const users = getUsers();
+      const tbody = document.getElementById("adminDonorsBody");
+      tbody.innerHTML = ""; // xóa cũ
+
+      if (donors.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:#999;">Chưa có đăng ký hiến máu nào.</td></tr>`;
+        return;
+      }
+
+      donors.forEach(d => {
+        const user = users.find(u => u.id === d.userId);
+        if (!user) return; // bảo vệ lỗi
+
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+          <td>${user.name}</td>
+          <td><strong style="color:#d32f2f;">${user.bloodType}</strong></td>
+          <td>${user.phone}</td>
+          <td>${d.date || "Chưa xác định"}</td>
+          <td>${d.location}</td>
+          <td>
+            <span class="status-badge ${d.status === 'Đã hiến' ? 'success' : 'pending'}">
+              ${d.status}
+            </span>
+          </td>
+          <td>
+            ${d.status === "Đã đăng ký" 
+              ? `<button class="btn small primary" onclick="approveDonor('${d.id}')">Duyệt hiến</button>`
+              : `<button class="btn small" disabled>Đã duyệt</button>`
+            }
+            <button class="btn small danger" onclick="deleteDonor('${d.id}')">Xóa</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // === DUYỆT HIẾN MÁU ===
+    function approveDonor(donorId) {
+      if (!confirm("Xác nhận người này đã hiến máu thành công?")) return;
+
+      let donors = getDonors();
+      donors = donors.map(d => 
+        d.id === donorId ? { ...d, status: "Đã hiến" } : d
+      );
+      localStorage.setItem("donors", JSON.stringify(donors));
+      alert("Đã cập nhật trạng thái thành công!");
+      loadAdminDonors(); // reload bảng
+      updateStats();     // cập nhật thống kê trang chủ (nếu cần)
+    }
+
+    // === XÓA ĐĂNG KÝ ===
+    function deleteDonor(donorId) {
+      if (!confirm("Xóa đăng ký hiến máu này?")) return;
+
+      let donors = getDonors();
+      donors = donors.filter(d => d.id !== donorId);
+      localStorage.setItem("donors", JSON.stringify(donors));
+      alert("Đã xóa!");
+      loadAdminDonors();
+    }
+
+    // === CHẠY KHI LOAD TRANG ===
+    document.addEventListener("DOMContentLoaded", loadAdminDonors);
+  </script>
+
+  <style>
+    /* Style nhanh nếu chưa có admin.css đầy đủ */
+    .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.9em; }
+    .status-badge.pending { background: #fff3cd; color: #856404; }
+    .status-badge.success { background: #d4edda; color: #155724; }
+    .btn.small { padding: 6px 12px; font-size: 0.9em; margin: 2px; }
+    .btn.danger { background: #dc3545; }
+    .table-wrapper { overflow-x: auto; margin-top: 20px; }
+  </style>
+</body>
+</html>

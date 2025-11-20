@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Login</title>
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="auth-page">
+  <div class="auth-container">
+    <h2>Đăng nhập Admin</h2>
+    <form id="adminLoginForm">
+      <input type="text" placeholder="Số điện thoại" id="adminPhone" value="0123456789" required />
+      <input type="password" placeholder="Mật khẩu" id="adminPass" value="admin123" required />
+      <button type="submit" class="btn primary">Đăng nhập Admin</button>
+    </form>
+    <p id="msg" class="msg"></p>
+  </div>
+
+  <script src="../js/utils.js"></script>
+  <script>
+    // TỰ ĐỘNG TẠO TÀI KHOẢN ADMIN NẾU CHƯA CÓ
+    function ensureAdminExists() {
+      let users = getUsers();
+      const adminExists = users.some(u => u.phone === "0123456789" && u.role === "admin");
+
+      if (!adminExists) {
+        const adminUser = {
+          id: "admin001",
+          name: "Quản trị viên",
+          phone: "0123456789",
+          password: "admin123",
+          bloodType: "O+",
+          address: "Hà Nội",
+          role: "admin"
+        };
+        users.push(adminUser);
+        localStorage.setItem("users", JSON.stringify(users));
+        console.log("ĐÃ TỰ ĐỘNG TẠO TÀI KHOẢN ADMIN!");
+        document.getElementById("msg").innerHTML = 
+          '<span style="color:#1b5e20; background:#d4edda; padding:10px; border-radius:8px; display:block;">' +
+          'Tài khoản Admin đã được tạo!<br>SĐT: <strong>0123456789</strong><br>Mật khẩu: <strong>admin123</strong>' +
+          '</span>';
+      }
+    }
+
+    // Chạy ngay khi load trang
+    ensureAdminExists();
+
+    // Xử lý đăng nhập
+    document.getElementById("adminLoginForm").onsubmit = function(e) {
+      e.preventDefault();
+      const phone = document.getElementById("adminPhone").value.trim();
+      const pass = document.getElementById("adminPass").value;
+
+      const users = getUsers();
+      const admin = users.find(u => u.phone === phone && u.password === pass && u.role === "admin");
+
+      if (admin) {
+        loginUser(admin);
+        alert("Đăng nhập Admin thành công!");
+        window.location.href = "dashboard.html";
+      } else {
+        document.getElementById("msg").innerHTML = 
+          '<span style="color:#721c24; background:#f8d7da; padding:10px; border-radius:8px; display:block;">' +
+          'Sai số điện thoại, mật khẩu hoặc không phải Admin!' +
+          '</span>';
+      }
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý người dùng</title>
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+  <div class="admin-container">
+    <h1>Danh sách người dùng</h1>
+    <nav>
+      <a href="dashboard.html">Tổng quan</a>
+      <a href="donors.html">Người hiến</a>
+      <a href="rescue.html">Yêu cầu cứu nạn</a>
+      <a href="users.html">Người dùng</a>
+      <a href="#" onclick="logout()">Đăng xuất</a>
+    </nav>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Họ tên</th>
+          <th>SĐT</th>
+          <th>Nhóm máu</th>
+          <th>Địa chỉ</th>
+          <th>Role</th>
+        </tr>
+      </thead>
+      <tbody id="usersBody"></tbody>
+    </table>
+  </div>
+
+  <script src="../js/utils.js"></script>
+  <script>
+    if (!isLoggedIn() || getCurrentUser().role !== "admin") location.href = "../login.html";
+
+    const users = getUsers();
+    const tbody = document.getElementById("usersBody");
+    users.forEach(u => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${u.id}</td>
+        <td>${u.name}</td>
+        <td>${u.phone}</td>
+        <td>${u.bloodType || "-"}</td>
+        <td>${u.address || "-"}</td>
+        <td>${u.role}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  </script>
+</body>
+</html>
